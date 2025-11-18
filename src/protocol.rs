@@ -135,3 +135,66 @@ pub fn crc16(buffer: &[u8]) -> u16 {
     }
     crc
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{EarPacket, HEADER_MAGIC, crc16};
+
+    #[test]
+    fn encode_and_parse_round_trip() {
+        let payload = [0xAA, 0x55, 0x01];
+        let encoded = EarPacket::encode(0xC007, 0x10, &payload);
+        // Ensure the encoded packet still starts with the expected header
+        assert_eq!(&encoded[..HEADER_MAGIC.len()], &HEADER_MAGIC);
+
+        let mut buffer = encoded.clone();
+        let parsed = EarPacket::try_parse(&mut buffer)
+            .expect("parser should not error")
+            .expect("packet should be parsed");
+
+        assert_eq!(parsed.command, 0xC007);
+        assert_eq!(parsed.operation_id, 0x10);
+        assert_eq!(parsed.payload, payload);
+        assert!(buffer.is_empty(), "buffer should be drained");
+    }
+
+    #[test]
+    fn try_parse_handles_fragmented_stream() {
+        let packet_a = EarPacket::encode(0x1234, 1, &[0x01, 0x02]);
+        let packet_b = EarPacket::encode(0xABCD, 2, &[0x03]);
+
+        // Simulate bytes arriving in small chunks.
+        let mut stream = Vec::new();
+        stream.extend_from_slice(&packet_a[..5]);
+        let mut buffer = stream.clone();
+        assert!(EarPacket::try_parse(&mut buffer).unwrap().is_none());
+
+        stream.extend_from_slice(&packet_a[5..]);
+        stream.extend_from_slice(&packet_b);
+        let mut rolling_buffer = stream.clone();
+
+        let first = EarPacket::try_parse(&mut rolling_buffer)
+            .unwrap()
+            .expect("first packet should parse");
+        assert_eq!(first.command, 0x1234);
+        assert_eq!(first.payload, vec![0x01, 0x02]);
+
+        let second = EarPacket::try_parse(&mut rolling_buffer)
+            .unwrap()
+            .expect("second packet should parse");
+        assert_eq!(second.command, 0xABCD);
+        assert_eq!(second.payload, vec![0x03]);
+        assert!(rolling_buffer.is_empty());
+    }
+
+    #[test]
+    fn crc16_matches_known_value() {
+        let bytes = [
+            HEADER_MAGIC.as_slice(),
+            &[0x34, 0x12, 0x02, 0x00, 0x01],
+            &[0xAA, 0xBB],
+        ]
+        .concat();
+        assert_eq!(crc16(&bytes), 0xFA6A);
+    }
+}

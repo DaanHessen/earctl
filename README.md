@@ -80,9 +80,7 @@ Follow these steps to run the API locally.
 
 * Rust toolchain (1.75+ recommended)
 * `bluez`, `bluez-utils` (for `bluetoothctl`)
-* `bluez-deprecated-tools` (provides `sdptool` + `rfcomm`)
-* `bluez-deprecated-tools` or `bluez-utils-compat` (provides `rfcomm`)
-* Permission to run `rfcomm bind` (run the API/CLI with `sudo` *or* grant the binary the capability with `sudo setcap 'cap_net_admin+ep' $(which rfcomm)`)
+* `bluez-deprecated-tools` (provides `sdptool` for RFCOMM channel discovery)
 * Your earbuds paired in the desktop Bluetooth UI
 
 ### Installation
@@ -98,7 +96,7 @@ Follow these steps to run the API locally.
    ```
 3. Start the API server (it defaults to `127.0.0.1:8787`)
    ```sh
-   cargo run -- server --addr 0.0.0.0:8787
+   earctl server --addr 0.0.0.0:8787
    ```
 4. Keep your earbuds connected through the system tray and run the auto connect helper (details below).
 
@@ -106,15 +104,12 @@ Follow these steps to run the API locally.
 
 ## Usage
 
-1. With the server running, pair and connect your earbuds via the OS Bluetooth menu.
-2. Hit the auto-connect endpoint (curl example):
+1. Ensure the server is running (`earctl server --addr 0.0.0.0:8787`) and your earbuds are connected via the OS Bluetooth menu.
+2. Auto-connect from any terminal:
    ```sh
-   curl -X POST http://127.0.0.1:8787/api/session/auto-connect \
-        -H 'Content-Type: application/json' \
-        -d '{ "name": "Nothing Ear", "rfcomm": "rfcomm0", "sku": "01" }'
+   earctl auto-connect --name "Nothing Ear"
    ```
-   This looks for a connected device, binds `/dev/rfcomm0` via `rfcomm bind`, and opens the session.
-   > **Note:** Creating `/dev/rfcomm*` requires CAP_NET_ADMIN. If the bind step fails, run the API with `sudo` or grant the capability to `/usr/bin/rfcomm` as mentioned in the prerequisites.
+   The server queries BlueZ for connected devices, discovers the Nothing RFCOMM channel via `sdptool`, and opens the session. Supply `--channel 15` if you need to override the detected value.
 3. Toggle ANC, EQ, latency, gestures, LED color, or trigger Find My Buds either via the REST endpoints or the CLI.
 4. Your top bar extension (or any other app) can poll `/api/session` to see when the buds are available.
 
@@ -126,20 +121,20 @@ All commands accept `--endpoint` to target a different API host. Defaults to `ht
 
 | Command | Description |
 | --- | --- |
-| `cargo run -- server --addr 0.0.0.0:8787` | Boot the HTTP API. |
-| `cargo run -- connect --port-path /dev/rfcomm0 --sku 01` | Manually open a session using an existing rfcomm device. |
-| `cargo run -- auto-connect --name "Nothing Ear" --rfcomm rfcomm0 --sku 01` | Ask the API to locate the connected buds, bind `/dev/rfcomm0`, and open the session. |
-| `cargo run -- session` | Show session metadata (model, port, UUID). |
-| `cargo run -- detect` | Read serial/SKU from the earbuds over SPP. |
-| `cargo run -- battery` | Print battery readings for left/right/case. |
-| `cargo run -- anc get` / `set --level transparency` | Read or change ANC mode (off / transparency / ANC strengths). |
-| `cargo run -- eq get` / `set --mode 3` | Get or switch the preset EQ. |
-| `cargo run -- custom-eq get` / `set --bass 2 --mid 0 --treble -1` | Manage 3-band custom EQ values. |
-| `cargo run -- latency get/set` | Toggle low-latency gaming mode. |
-| `cargo run -- in-ear get/set` | Toggle in-ear detection (where supported). |
-| `cargo run -- enhanced-bass get/set` | Manage enhanced bass toggle + level. |
-| `cargo run -- personalized-anc get/set` | Personalized ANC switch (Ear (2) & Nothing Ear). |
-| `cargo run -- ring --enable true --side left` | Trigger Find My Buds (side optional). |
+| `earctl server --addr 0.0.0.0:8787` | Boot the HTTP API. |
+| `earctl connect --address 3C:B0:ED:C4:B0:31 --channel 15` | Manually open a session when you already know the MAC + RFCOMM channel. |
+| `earctl auto-connect --name "Nothing Ear"` | Locate the connected buds, detect their RFCOMM channel, and open the session (optionally add `--channel` to override). |
+| `earctl session` | Show session metadata (model, port, UUID). |
+| `earctl detect` | Read serial/SKU from the earbuds over SPP. |
+| `earctl battery` | Print battery readings for left/right/case. |
+| `earctl anc get` / `earctl anc set transparency` | Read or change ANC mode (off / transparency / ANC strengths). |
+| `earctl eq get` / `earctl eq set --mode 3` | Get or switch the preset EQ. |
+| `earctl custom-eq get` / `earctl custom-eq set --bass 2 --mid 0 --treble -1` | Manage 3-band custom EQ values. |
+| `earctl latency get` / `earctl latency set true|false` | Toggle low-latency gaming mode. |
+| `earctl in-ear get` / `earctl in-ear set true|false` | Toggle in-ear detection (where supported). |
+| `earctl enhanced-bass get` / `earctl enhanced-bass set --enabled true --level 4` | Manage enhanced bass toggle + level. |
+| `earctl personalized-anc get` / `earctl personalized-anc set true|false` | Personalized ANC switch (Ear (2) & Nothing Ear). |
+| `earctl ring --enable true --side left` | Trigger Find My Buds (side optional). |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -147,8 +142,8 @@ All commands accept `--endpoint` to target a different API host. Defaults to `ht
 
 | Method | Path | Body | Description |
 | --- | --- | --- | --- |
-| `POST` | `/api/session/auto-connect` | `{ address?, name?, rfcomm?, channel?, baud_rate?, sku? }` | Locate connected earbuds through `bluetoothctl`, bind the rfcomm device, and open a session. |
-| `POST` | `/api/session/connect` | `{ port_path, baud_rate?, model? }` | Open a session using an existing `/dev/rfcommX`. |
+| `POST` | `/api/session/auto-connect` | `{ address?, name?, channel?, sku? }` | Locate connected earbuds through `bluetoothctl`, discover their RFCOMM channel via SDP, and open a session. |
+| `POST` | `/api/session/connect` | `{ address, channel, model? }` | Open a session using an explicit Bluetooth MAC + channel. |
 | `GET` | `/api/session` | – | Return session UUID, port path, and detected model. |
 | `DELETE` | `/api/session` | – | Drop the active session. |
 | `POST` | `/api/session/detect` | – | Read serial/SKU for the connected device. |

@@ -8,6 +8,7 @@ use axum::{
     routing::{get, post},
 };
 use serde::Deserialize;
+use tracing::warn;
 
 use crate::{
     bluetooth,
@@ -108,9 +109,21 @@ async fn auto_connect(
 ) -> ApiResult<SessionInfo> {
     let device =
         bluetooth::resolve_connected_device(request.address.clone(), request.name.clone()).await?;
-    let channel = match request.channel {
-        Some(ch) => ch,
-        None => bluetooth::detect_rfcomm_channel(&device.address).await?,
+    let channel = if let Some(ch) = request.channel {
+        ch
+    } else {
+        match bluetooth::detect_rfcomm_channel(&device.address).await {
+            Ok(ch) => ch,
+            Err(err) => {
+                warn!(
+                    "Failed to detect RFCOMM channel for {}: {}. Falling back to channel {}",
+                    device.address,
+                    err,
+                    default_rfcomm_channel()
+                );
+                default_rfcomm_channel()
+            }
+        }
     };
 
     // Parse Bluetooth address for bluer
@@ -366,6 +379,7 @@ impl IntoResponse for ApiError {
         let status = match self.inner {
             EarError::NoSession => StatusCode::NOT_FOUND,
             EarError::AlreadyConnected => StatusCode::CONFLICT,
+            EarError::Detection(_) => StatusCode::BAD_REQUEST,
             EarError::Unsupported(_) | EarError::UnknownModel => StatusCode::BAD_REQUEST,
             EarError::Timeout(_) => StatusCode::GATEWAY_TIMEOUT,
             _ => StatusCode::INTERNAL_SERVER_ERROR,

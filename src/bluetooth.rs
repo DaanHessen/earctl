@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use tokio::process::Command;
 
 use crate::error::EarError;
@@ -47,24 +45,6 @@ pub async fn resolve_connected_device(
     let first = connected.into_iter().next().unwrap();
     verify_device_connected(&first.address).await?;
     Ok(first)
-}
-
-pub fn rfcomm_path(name: &str) -> PathBuf {
-    if name.starts_with("/dev/") {
-        PathBuf::from(name)
-    } else {
-        PathBuf::from(format!("/dev/{}", name))
-    }
-}
-
-pub fn next_available_rfcomm_name() -> String {
-    for index in 0..10 {
-        let name = format!("rfcomm{}", index);
-        if !rfcomm_path(&name).exists() {
-            return name;
-        }
-    }
-    "rfcomm0".to_string()
 }
 
 pub async fn list_connected_devices() -> Result<Vec<BluetoothDevice>, EarError> {

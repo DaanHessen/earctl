@@ -1,18 +1,18 @@
 use std::{net::SocketAddr, sync::Arc};
 
 use anyhow::{Result, anyhow};
-use clap::{Parser, Subcommand};
+use clap::{ArgAction, Parser, Subcommand, builder::BoolishValueParser};
 use ear_api::{
     AncLevel, ApiState, BatteryStatus, CustomEq, EarManager, EarSide, EnhancedBassState, EqMode,
     SerialIdentity, SessionInfo, serve_http,
 };
 use reqwest::{Client, Method};
 use serde::{Serialize, de::DeserializeOwned};
-use serde_json::Value;
+use serde_json::{Map, Value};
 
 #[derive(Parser)]
 #[command(
-    name = "ear-api",
+    name = "earctl",
     version,
     about = "Control Nothing Ear devices from the CLI or via HTTP"
 )]
@@ -117,7 +117,12 @@ enum CustomEqCommand {
 enum SwitchCommand {
     Get,
     Set {
-        #[arg(long)]
+        #[arg(
+            value_parser = BoolishValueParser::new(),
+            value_name = "true|false",
+            help = "true to enable, false to disable",
+            action = ArgAction::Set
+        )]
         enabled: bool,
     },
 }
@@ -126,7 +131,7 @@ enum SwitchCommand {
 enum EnhancedBassCommand {
     Get,
     Set {
-        #[arg(long)]
+        #[arg(long, value_parser = BoolishValueParser::new(), action = ArgAction::Set)]
         enabled: bool,
         #[arg(long, default_value = "0")]
         level: u8,
@@ -135,7 +140,7 @@ enum EnhancedBassCommand {
 
 #[derive(Parser)]
 struct RingArgs {
-    #[arg(long)]
+    #[arg(long, value_parser = BoolishValueParser::new(), action = ArgAction::Set)]
     enable: bool,
     #[arg(long)]
     side: Option<EarSide>,
@@ -359,10 +364,10 @@ async fn run_client(cli: Cli) -> Result<()> {
             }
         },
         Commands::Latency { action } => {
-            handle_switch_command(&client, "/api/latency", action).await?;
+            handle_switch_command(&client, "/api/latency", "low_latency_enabled", action).await?;
         }
         Commands::InEar { action } => {
-            handle_switch_command(&client, "/api/in-ear", action).await?;
+            handle_switch_command(&client, "/api/in-ear", "detection_enabled", action).await?;
         }
         Commands::EnhancedBass { action } => match action {
             EnhancedBassCommand::Get => {
@@ -376,7 +381,7 @@ async fn run_client(cli: Cli) -> Result<()> {
             }
         },
         Commands::PersonalizedAnc { action } => {
-            handle_switch_command(&client, "/api/personalized-anc", action).await?;
+            handle_switch_command(&client, "/api/personalized-anc", "enabled", action).await?;
         }
         Commands::Ring(args) => {
             let body = serde_json::json!({
@@ -393,6 +398,7 @@ async fn run_client(cli: Cli) -> Result<()> {
 async fn handle_switch_command(
     client: &ApiClient,
     path: &str,
+    field: &str,
     action: SwitchCommand,
 ) -> Result<()> {
     match action {
@@ -401,8 +407,9 @@ async fn handle_switch_command(
             print_json(&resp)?;
         }
         SwitchCommand::Set { enabled } => {
-            let body = serde_json::json!({ "enabled": enabled });
-            let resp: Value = client.post(path, body).await?;
+            let mut payload = Map::new();
+            payload.insert(field.to_string(), Value::Bool(enabled));
+            let resp: Value = client.post(path, Value::Object(payload)).await?;
             print_json(&resp)?;
         }
     }
