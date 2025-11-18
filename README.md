@@ -10,7 +10,7 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/daanh/ear-api">
+  <a href="https://github.com/DaanHessen/earctl">
     <img src="docs/ear-web/res/icons/256x256.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -22,9 +22,9 @@
     <a href="#usage"><strong>Jump to usage »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/daanh/ear-api/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/DaanHessen/earctl/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
-    <a href="https://github.com/daanh/ear-api/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/DaanHessen/earctl/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -57,9 +57,9 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com/daanh/ear-api)
+[![Product Name Screen Shot][product-screenshot]](https://github.com/DaanHessen/earctl)
 
-ear-api is a Rust rewrite of the backend logic used by the community ear-web tool. It exposes the same Bluetooth Serial Port Profile commands through a REST API and a small CLI. That means you can automate ANC, EQ, latency mode, gestures, and the rest of the Nothing/CMF settings without launching a browser. The server stays up in the background and automatically binds to your earbuds’ RFCOMM port whenever it sees them online.
+earctl is a Rust rewrite of the backend logic used by the community ear-web tool. It exposes the same Bluetooth Serial Port Profile commands through a REST API and a small CLI. That means you can automate ANC, EQ, latency mode, gestures, and the rest of the Nothing/CMF settings without launching a browser. The server stays up in the background and automatically binds to your earbuds’ RFCOMM port whenever it sees them online.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -167,11 +167,9 @@ All commands accept `--endpoint` to target a different API host. Defaults to `ht
 
 ## Roadmap
 
-- [ ] Add full BlueZ D-Bus integration (no shelling out).
-- [ ] Persistent config for favorite models.
-- [ ] Optional metrics endpoint for dashboards.
+- [ ] 
 
-See the [open issues](https://github.com/daanh/ear-api/issues) for anything else that’s planned.
+See the [open issues](https://github.com/DaanHessen/earctl/issues) for anything else that’s planned.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -179,16 +177,10 @@ See the [open issues](https://github.com/daanh/ear-api/issues) for anything else
 
 Contributions are welcome: open an issue if you found a bug or send a pull request with the fix.
 
-1. Fork the project
-2. Create a branch (`git checkout -b feature/my-idea`)
-3. Make your changes + add tests where it makes sense
-4. `cargo fmt && cargo check`
-5. Push and open a pull request
-
 Top contributors:
 
-<a href="https://github.com/daanh/ear-api/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=daanh/ear-api" alt="contrib.rocks image" />
+<a href="https://github.com/DaanHessen/earctl/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DaanHessen/earctl" alt="contrib.rocks image" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -201,9 +193,9 @@ Distributed under the GPL-3.0 license. See `LICENSE` for details.
 
 ## Contact
 
-Daan – [Twitter](https://twitter.com/) – daan@example.com
+Daan Hessen – [Twitter](https://twitter.com/) – daanh2002@gmail.com
 
-Project Link: [https://github.com/daanh/ear-api](https://github.com/daanh/ear-api)
+Project Link: [https://github.com/DaanHessen/earctl](https://github.com/DaanHessen/earctl)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -216,17 +208,17 @@ Project Link: [https://github.com/daanh/ear-api](https://github.com/daanh/ear-ap
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 [contributors-shield]: https://img.shields.io/github/contributors/daanh/ear-api.svg?style=for-the-badge
-[contributors-url]: https://github.com/daanh/ear-api/graphs/contributors
+[contributors-url]: https://github.com/DaanHessen/earctl/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/daanh/ear-api.svg?style=for-the-badge
-[forks-url]: https://github.com/daanh/ear-api/network/members
+[forks-url]: https://github.com/DaanHessen/earctl/network/members
 [stars-shield]: https://img.shields.io/github/stars/daanh/ear-api.svg?style=for-the-badge
-[stars-url]: https://github.com/daanh/ear-api/stargazers
+[stars-url]: https://github.com/DaanHessen/earctl/stargazers
 [issues-shield]: https://img.shields.io/github/issues/daanh/ear-api.svg?style=for-the-badge
-[issues-url]: https://github.com/daanh/ear-api/issues
+[issues-url]: https://github.com/DaanHessen/earctl/issues
 [license-shield]: https://img.shields.io/github/license/daanh/ear-api.svg?style=for-the-badge
-[license-url]: https://github.com/daanh/ear-api/blob/master/LICENSE
+[license-url]: https://github.com/DaanHessen/earctl/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com
+[linkedin-url]: https://www.linkedin.com/in/daan-hessen-552789236/
 [product-screenshot]: docs/ear-web/res/MainControl/hero.png
 [Rust-img]: https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white
 [Rust-url]: https://www.rust-lang.org/
