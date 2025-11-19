@@ -201,8 +201,7 @@ Project Link: [https://github.com/DaanHessen/earctl](https://github.com/DaanHess
 
 ## Acknowledgments
 
-* RapidZapper, Bendix, and the rest of the ear-web crew for the groundwork.
-* Everyone reverse-engineering SPP payloads on Discord.
+* [RapidZapper, Bendix, Lisra-git, MemerGamer and the rest of the ear-web team for the groundwork.](https://github.com/radiance-project/ear-web)
 * The BlueZ maintainers.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
