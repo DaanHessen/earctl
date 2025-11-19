@@ -87,8 +87,8 @@ Follow these steps to run the API locally.
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/daanh/ear-api.git
-   cd ear-api
+   git clone https://github.com/DaanHessen/earctl.git
+   cd earctl
    ```
 2. Build in dev mode
    ```sh
@@ -187,13 +187,13 @@ Top contributors:
 
 ## License
 
-Distributed under the GPL-3.0 license. See `LICENSE` for details.
+Distributed under the GNU Affero GPL-3.0 license. See `LICENSE` for details.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contact
 
-Daan Hessen – [Twitter](https://twitter.com/) – daanh2002@gmail.com
+Daan Hessen – daanh2002@gmail.com
 
 Project Link: [https://github.com/DaanHessen/earctl](https://github.com/DaanHessen/earctl)
 
@@ -207,15 +207,15 @@ Project Link: [https://github.com/DaanHessen/earctl](https://github.com/DaanHess
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-[contributors-shield]: https://img.shields.io/github/contributors/daanh/ear-api.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/DaanHessen/earctl.svg?style=for-the-badge
 [contributors-url]: https://github.com/DaanHessen/earctl/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/daanh/ear-api.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/DaanHessen/earctl.svg?style=for-the-badge
 [forks-url]: https://github.com/DaanHessen/earctl/network/members
-[stars-shield]: https://img.shields.io/github/stars/daanh/ear-api.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/DaanHessen/earctl.svg?style=for-the-badge
 [stars-url]: https://github.com/DaanHessen/earctl/stargazers
-[issues-shield]: https://img.shields.io/github/issues/daanh/ear-api.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/DaanHessen/earctl.svg?style=for-the-badge
 [issues-url]: https://github.com/DaanHessen/earctl/issues
-[license-shield]: https://img.shields.io/github/license/daanh/ear-api.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/DaanHessen/earctl.svg?style=for-the-badge
 [license-url]: https://github.com/DaanHessen/earctl/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/daan-hessen-552789236/
