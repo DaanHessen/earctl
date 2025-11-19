@@ -10,14 +10,14 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/DaanHessen/earctl">
-    <img src="docs/ear-web/res/icons/256x256.png" alt="Logo" width="80" height="80">
+  <!-- <a href="https://github.com/DaanHessen/earctl">
+    <img src="docs/ear-web/res/icons/256x256.png" alt="Logo" width="80" height="80"> -->
   </a>
 
-<h3 align="center">Ear Control API</h3>
+<h3 align="center">Nothing Ear API/CLI</h3>
 
   <p align="center">
-    A Rust API/CLI that mirrors the Nothing ear-web backend so every device on your network can control your earbuds.
+    A Rust API/CLI that allows every device on your network to control your Nothing earbuds.
     <br />
     <a href="#usage"><strong>Jump to usage »</strong></a>
     <br />
@@ -57,11 +57,11 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com/DaanHessen/earctl)
+<!-- [![Product Name Screen Shot][product-screenshot]](https://github.com/DaanHessen/earctl) -->
 
-earctl is a Rust rewrite of the backend logic used by the community ear-web tool. It exposes the same Bluetooth Serial Port Profile commands through a REST API and a small CLI. That means you can automate ANC, EQ, latency mode, gestures, and the rest of the Nothing/CMF settings without launching a browser. The server stays up in the background and automatically binds to your earbuds’ RFCOMM port whenever it sees them online.
+earctl is a Rust rewrite of the backend logic used by the community ear-web tool. It exposes the same Bluetooth Serial Port Profile commands through a REST API and a small CLI. That means you can automate ANC, EQ, latency mode, gestures, and the rest of the Nothing/CMF settings without launching a browser.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 ### Built With
 
