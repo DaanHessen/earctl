@@ -1,4 +1,4 @@
-use std::{net::SocketAddr, sync::Arc};
+use std::{io::{self, Write}, net::SocketAddr, sync::Arc};
 
 use anyhow::{Result, anyhow};
 use clap::{ArgAction, Parser, Subcommand, builder::BoolishValueParser};
@@ -384,6 +384,19 @@ async fn run_client(cli: Cli) -> Result<()> {
             handle_switch_command(&client, "/api/personalized-anc", "enabled", action).await?;
         }
         Commands::Ring(args) => {
+            if args.enable {
+                print!("Warning: This will play a loud tone on your earbuds. Type 'y' to confirm: ");
+                io::stdout().flush()?;
+                
+                let mut input = String::new();
+                io::stdin().read_line(&mut input)?;
+                
+                if input.trim() != "y" {
+                    println!("Cancelled.");
+                    return Ok(());
+                }
+            }
+            
             let body = serde_json::json!({
                 "enable": args.enable,
                 "side": args.side
