@@ -1,0 +1,26 @@
+[Unit]
+Description=Nothing Ear API Server
+Documentation=https://github.com/DaanHessen/earctl
+After=bluetooth.target
+Wants=bluetooth.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/earctl server --addr 127.0.0.1:8787
+Restart=on-failure
+RestartSec=5s
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/bluetooth
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=earctl
+
+[Install]
+WantedBy=default.target
