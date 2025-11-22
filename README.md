@@ -25,6 +25,8 @@
     <a href="https://github.com/DaanHessen/earctl/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
     <a href="https://github.com/DaanHessen/earctl/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    &middot;
+    <a href="https://aur.archlinux.org/packages/earctl">AUR</a>
   </p>
 </div>
 
