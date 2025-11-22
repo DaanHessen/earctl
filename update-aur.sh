@@ -15,6 +15,7 @@ echo "Copying files to AUR repository..."
 AUR_DIR="../earctl-aur"
 cp PKGBUILD "$AUR_DIR/"
 cp .SRCINFO "$AUR_DIR/"
+cp earctl.install "$AUR_DIR/"
 echo ""
 
 # Show diff
