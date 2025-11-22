@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>earctl Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --bg: #0f141f;
+      --text: #e6ecf7;
+      --muted: rgba(230, 236, 247, 0.78);
+      --accent: #91c9ff;
+      --border: rgba(255, 255, 255, 0.09);
+      --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      --sans: "Epilogue", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(120% 120% at 14% 18%, rgba(145, 201, 255, 0.08), transparent 40%),
+        radial-gradient(120% 120% at 86% 10%, rgba(145, 201, 255, 0.06), transparent 40%),
+        linear-gradient(180deg, #0f141f, #0e111a 46%, #0c1017 100%);
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 28px;
+      padding: 32px 36px 48px;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+      padding: 8px 0;
+      border-right: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 0 14px;
+      color: #eef4ff;
+      font-weight: 700;
+      letter-spacing: 0.15px;
+    }
+
+    nav {
+      margin-top: 4px;
+      display: grid;
+      gap: 2px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 2px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: color 0.12s ease, border-color 0.12s ease;
+      font-weight: 500;
+    }
+
+    .nav-link span {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: rgba(233, 241, 255, 0.55);
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: #f7fbff;
+      border-color: var(--accent);
+    }
+
+    .main {
+      padding: 0;
+    }
+
+    .hero {
+      padding: 6px 0 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero h1 {
+      margin: 0 0 6px;
+      font-size: 24px;
+      letter-spacing: -0.2px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 900px;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 8px 0 6px;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #c8dcf5;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      padding: 4px 0;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .pill-inline {
+      display: inline-block;
+      padding: 5px 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11.5px;
+      letter-spacing: 0.15px;
+      color: #dfe9ff;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #0a1222;
+      text-decoration: none;
+      font-weight: 700;
+      background: linear-gradient(120deg, #a9dfff, #7abfff);
+      box-shadow: none;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .cta.secondary {
+      background: transparent;
+      color: #dce8ff;
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    .cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(122, 191, 255, 0.25);
+    }
+
+    .section {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      letter-spacing: -0.12px;
+    }
+
+    h3 {
+      margin: 12px 0 6px;
+      font-size: 15px;
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    code {
+      font-family: var(--mono);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+    }
+
+    pre {
+      margin: 8px 0 12px;
+      padding: 10px 12px;
+      background: #0e1c33;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      overflow-x: auto;
+      color: #e7eeff;
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    ul {
+      color: var(--muted);
+      padding-left: 16px;
+      margin: 0 0 10px;
+      line-height: 1.65;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px 16px;
+      margin-top: 8px;
+    }
+
+    .card {
+      padding: 6px 0 6px;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+    .card h4 {
+      margin: 0 0 6px;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    .card .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      background: rgba(118, 194, 255, 0.16);
+      color: #d1eaff;
+      border: 1px solid rgba(118, 194, 255, 0.28);
+      margin-bottom: 6px;
+    }
+
+    .callout {
+      margin: 10px 0 6px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(118, 194, 255, 0.08);
+      color: #dce8ff;
+    }
+
+    .callout strong {
+      color: #f7fbff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 10px;
+      font-size: 13px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 8px 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    th {
+      color: #f2f6ff;
+      font-weight: 700;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #c9e5ff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .footnote {
+      color: rgba(215, 224, 255, 0.6);
+      font-size: 12.5px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 1100px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        top: 0;
+        border-right: none;
+        padding: 0 0 8px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        padding: 18px 16px 36px;
+      }
+
+      .hero h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      <div class="brand">
+        <div style="font-size: 16px;">earctl</div>
+      </div>
+      <nav>
+        <a class="nav-link" href="#intro"><span>01</span>Overview</a>
+        <a class="nav-link" href="#install"><span>02</span>Install</a>
+        <a class="nav-link" href="#usage"><span>03</span>Usage</a>
+        <a class="nav-link" href="#config"><span>04</span>Configuration</a>
+        <a class="nav-link" href="#api"><span>05</span>API</a>
+        <a class="nav-link" href="#contributing"><span>06</span>Contributing</a>
+        <a class="nav-link" href="#license"><span>07</span>License</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="hero" id="intro">
+        <div class="tagline">Docs</div>
+        <h1>earctl</h1>
+        <p>Earctl is a Rust HTTP API and CLI for controlling Nothing and CMF earbuds through the BlueZ Serial Port Profile. Run it on any Linux box to expose ANC, EQ, latency, and gesture controls to scripts or other devices on your network.</p>
+        <div class="cta-row">
+          <a class="cta" href="#install">Get started</a>
+          <a class="cta secondary" href="https://github.com/DaanHessen/earctl" target="_blank" rel="noreferrer">Source on GitHub</a>
+        </div>
+
+        <div class="grid" style="margin-top: 12px;">
+          <div class="card">
+            <h4>Key Features</h4>
+            <ul>
+              <li>HTTP API and CLI for Nothing/CMF earbuds via BlueZ RFCOMM.</li>
+              <li>Auto-detects connected devices, RFCOMM channel, and model metadata (SKU/serial overrides supported).</li>
+              <li>Controls ANC, EQ (including custom EQ), latency, gestures, enhanced bass, case LEDs, and Find My Buds.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Quick Stats</h4>
+            <ul>
+              <li>Default API bind: <code>127.0.0.1:8787</code> (Axum HTTP server).</li>
+              <li>Targets Nothing Ear (1/2/a/open/Ear) and CMF Buds/Buds Pro/Buds Pro 2/Neckband Pro bases.</li>
+              <li>Rust 2024 edition on Tokio; depends on BlueZ utilities (<code>bluetoothctl</code> and <code>sdptool</code>).</li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <section class="section" id="install">
+        <h2>Install</h2>
+        <p>Earctl targets Linux with BlueZ. Pair your earbuds first and ensure <code>bluez</code>, <code>bluez-utils</code> (<code>bluetoothctl</code>), and <code>bluez-deprecated-tools</code> (<code>sdptool</code>) are installed. You need Rust (1.75+ recommended) to build.</p>
+        <pre><code class="language-bash">git clone https://github.com/DaanHessen/earctl.git
+cd earctl
+cargo build --release
+./target/release/earctl server --addr 0.0.0.0:8787</code></pre>
+        <p>Install the binary locally from the repo:</p>
+        <pre><code class="language-bash">cargo install --path .</code></pre>
+        <p>The Arch package ships a user service. After installing the package, enable it:</p>
+        <pre><code class="language-bash">systemctl --user enable --now earctl.service</code></pre>
+      </section>
+
+      <section class="section" id="usage">
+        <h2>Usage</h2>
+        <p>Start the API server, connect to your buds, then query or set states from the CLI or HTTP.</p>
+        <pre><code class="language-bash">earctl server --addr 0.0.0.0:8787
+earctl auto-connect --name "Nothing Ear"
+earctl battery
+earctl anc set transparency
+earctl custom-eq set --bass 2 --mid 0 --treble -1
+earctl ring --enable true --side left</code></pre>
+        <p>HTTP example:</p>
+        <pre><code class="language-bash">curl -X POST http://127.0.0.1:8787/api/session/auto-connect \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Nothing Ear", "channel": 15 }'</code></pre>
+        <div class="callout"><strong>Note:</strong> Keep the earbuds connected in your OS Bluetooth menu. <code>auto-connect</code> reuses the active connection and falls back to channel 1 if SDP discovery fails.</div>
+      </section>
+
+      <section class="section" id="config">
+        <h2>Configuration</h2>
+        <p>Configure earctl through CLI flags; there is no separate config file. Most settings can be supplied either to the server or to a specific command.</p>
+
+        <h3>Options</h3>
+        <table>
+          <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+          <tr><td><code>--addr</code></td><td><code>127.0.0.1:8787</code></td><td>Listen address for <code>earctl server</code>.</td></tr>
+          <tr><td><code>--endpoint</code></td><td><code>http://127.0.0.1:8787</code></td><td>Base URL used by client commands to reach the API.</td></tr>
+          <tr><td><code>--bluetooth_address</code></td><td>–</td><td>Explicit MAC address for <code>auto-connect</code>; skips discovery.</td></tr>
+          <tr><td><code>--name</code></td><td>–</td><td>Filter connected devices by a substring of their name during auto-connect.</td></tr>
+          <tr><td><code>--channel</code></td><td><code>1</code></td><td>RFCOMM channel fallback when SDP detection fails.</td></tr>
+          <tr><td><code>--model-id</code> / <code>--sku</code></td><td>–</td><td>Override detected model metadata when the device does not report it.</td></tr>
+        </table>
+      </section>
+
+      <section class="section" id="api">
+        <h2>API Reference</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="badge">Session</div>
+            <h4><code>/api/session*</code></h4>
+            <ul>
+              <li><code>POST /api/session/auto-connect</code>: Detect the connected buds, discover RFCOMM, and open a session.</li>
+              <li><code>POST /api/session/connect</code>: Connect with an explicit MAC and channel.</li>
+              <li><code>POST /api/session/detect</code> / <code>POST /api/session/model</code>: Read or override SKU/model metadata.</li>
+              <li><code>GET /api/session</code> / <code>DELETE /api/session</code>: Show or close the active session.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="badge">Controls</div>
+            <h4><code>/api/anc</code> / <code>/api/eq</code></h4>
+            <ul>
+              <li><code>/api/anc</code>, <code>/api/eq</code>, <code>/api/eq/custom</code>: Read or set ANC and EQ (including custom bands).</li>
+              <li><code>/api/enhanced-bass</code>, <code>/api/personalized-anc</code>, <code>/api/in-ear</code>, <code>/api/latency</code>: Toggle feature switches per model support.</li>
+              <li><code>/api/gestures</code>: Read or update gesture mappings.</li>
+              <li><code>/api/led-case</code>: Read or set case LED pixels (Ear (1)).</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="badge">Status</div>
+            <h4><code>/api/battery</code> & tools</h4>
+            <ul>
+              <li><code>/api/battery</code>, <code>/api/firmware</code>: Battery readings and firmware string.</li>
+              <li><code>/api/ear-fit</code>: Start an ear-fit test (<code>POST</code>) and read the result (<code>GET</code>).</li>
+              <li><code>/api/ring</code>: Trigger the Find My Buds tone (loud).</li>
+              <li><code>/api/session</code>: Returns session ID, port path, and detected model summary.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="contributing">
+        <h2>Contributing</h2>
+        <p>Issues and pull requests are welcome. Please check existing issues, keep changes scoped, and run <code>cargo fmt</code> and <code>cargo test</code> before submitting.</p>
+        <ul>
+          <li>Fork the repository.</li>
+          <li>Create a feature branch.</li>
+          <li>Submit a pull request.</li>
+        </ul>
+      </section>
+
+      <section class="section" id="license">
+        <h2>License</h2>
+        <p>earctl is licensed under the GNU Affero General Public License v3.0. See <code>LICENSE</code> for details.</p>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    const navLinks = Array.from(document.querySelectorAll(".nav-link"));
+    const sections = navLinks
+      .map((link) => document.querySelector(link.getAttribute("href")))
+      .filter(Boolean);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navLinks.forEach((link) => link.classList.remove("active"));
+            const active = navLinks.find((link) => link.getAttribute("href") === `#${entry.target.id}`);
+            if (active) active.classList.add("active");
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -40% 0px" }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  </script>
+</body>
+</html>

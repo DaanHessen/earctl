@@ -1,0 +1,19 @@
+post_install() {
+    echo "==> Enabling and starting earctl service..."
+    systemctl --user enable --now earctl.service 2>/dev/null || true
+    echo "==> earctl server is running in the background"
+    echo "==> Done! see help for more information:"
+    echo "    earctl -help"
+    echo ""
+}
+
+post_upgrade() {
+    echo "==> Restarting earctl service..."
+    systemctl --user restart earctl.service 2>/dev/null || true
+    echo "==> earctl has been restarted"
+}
+
+pre_remove() {
+    echo "==> Stopping and disabling earctl service..."
+    systemctl --user disable --now earctl.service 2>/dev/null || true
+}
