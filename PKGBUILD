@@ -1,21 +1,21 @@
 # Maintainer: Daan Hessen <daanh2002@gmail.com>
 pkgname=earctl
-pkgver=0.1.0
-pkgrel=4
+pkgver=0.1.1
+pkgrel=1
 pkgdesc="A Rust API/CLI that allows every device on your network to control your Nothing earbuds"
 arch=('x86_64')
 url="https://github.com/DaanHessen/earctl"
 license=('AGPL-3.0-or-later')
 depends=('dbus')
 makedepends=('cargo')
+options=('!lto')
 source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz")
-sha256sums=('386997aeca25911cd1252472bdf5898ec4a2c05977495665ed7fd92bf0050416')
+sha256sums=('SKIP')
 
 build() {
   cd "${pkgname}-${pkgver}"
   export RUSTUP_TOOLCHAIN=stable
   export CARGO_TARGET_DIR=target
-  export RUSTFLAGS="-C link-arg=-fuse-ld=bfd"
   cargo build --release --locked --all-features
 }
 
