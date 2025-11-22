@@ -19,7 +19,7 @@
   <p align="center">
     A Rust API/CLI that allows every device on your network to control your Nothing earbuds.
     <br />
-    <a href="https://daanhessen.github.io/earctl/"><strong>View full docs »</strong></a>
+    <a href="https://daanhessen.github.io/earctl/docs"><strong>View full docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/DaanHessen/earctl/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
@@ -28,16 +28,15 @@
   </p>
 </div>
 
+
+
 ## About The Project
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://github.com/DaanHessen/earctl) -->
 
 earctl is a Rust rewrite of the backend logic used by the community ear-web tool. It exposes the same Bluetooth Serial Port Profile commands through a REST API and a small CLI. That means you can automate ANC, EQ, latency mode, gestures, and the rest of the Nothing/CMF settings without launching a browser.
 
-### Documentation
 
-- Full docs: https://daanhessen.github.io/earctl/
-- Static copy in this repo: `docs/index.html`
 
 ## Getting Started
 
@@ -59,9 +58,11 @@ cargo build --release
 ./target/release/earctl server --addr 0.0.0.0:8787
 ```
 
-On Arch, install from the AUR with `yay -S earctl` (includes a user service).
+On Arch, install from the AUR with `yay -S earctl`.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 
 ## Usage
 
@@ -73,7 +74,9 @@ On Arch, install from the AUR with `yay -S earctl` (includes a user service).
    The server queries BlueZ for connected devices, discovers the Nothing RFCOMM channel via `sdptool`, and opens the session. Supply `--channel <number>` if you need to override the detected value (defaults to channel 1 if detection fails).
 3. Toggle ANC, EQ, latency, gestures, LED color, or trigger Find My Buds either via the REST endpoints or the CLI.
 
-_For more information, refer to the [documentation](https://daanhessen.github.io/earctl/)_
+_For more information, refer to the [documentation](https://daanhessen.github.io/earctl/docs)_
+
+
 
 ## Contributing
 
@@ -92,6 +95,8 @@ Top contributors:
 Distributed under the GNU Affero GPL-3.0 license. See `LICENSE` for details.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 
 ## Contact
 
