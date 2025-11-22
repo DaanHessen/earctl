@@ -382,7 +382,7 @@
             <h4>Quick Stats</h4>
             <ul>
               <li>Default API bind: <code>127.0.0.1:8787</code> (Axum HTTP server).</li>
-              <li>Targets Nothing Ear (1/2/a/open/Ear) and CMF Buds/Buds Pro/Buds Pro 2/Neckband Pro bases.</li>
+              <li>Targets Nothing Ear (1), Ear (stick), Ear (2), Ear, Ear (a), Ear (open) and CMF Buds, Buds Pro, Buds Pro 2, Neckband Pro.</li>
               <li>Rust 2024 edition on Tokio; depends on BlueZ utilities (<code>bluetoothctl</code> and <code>sdptool</code>).</li>
             </ul>
           </div>
@@ -414,23 +414,44 @@ earctl ring --enable true --side left</code></pre>
         <p>HTTP example:</p>
         <pre><code class="language-bash">curl -X POST http://127.0.0.1:8787/api/session/auto-connect \
   -H "Content-Type: application/json" \
-  -d '{ "name": "Nothing Ear", "channel": 15 }'</code></pre>
-        <div class="callout"><strong>Note:</strong> Keep the earbuds connected in your OS Bluetooth menu. <code>auto-connect</code> reuses the active connection and falls back to channel 1 if SDP discovery fails.</div>
+  -d '{ "name": "Nothing Ear" }'</code></pre>
+        <div class="callout"><strong>Note:</strong> Keep the earbuds connected in your OS Bluetooth menu. <code>auto-connect</code> reuses the active connection and falls back to channel 1 if SDP discovery fails. You can optionally specify <code>"channel": &lt;number&gt;</code> to override the detected channel.</div>
       </section>
 
       <section class="section" id="config">
         <h2>Configuration</h2>
-        <p>Configure earctl through CLI flags; there is no separate config file. Most settings can be supplied either to the server or to a specific command.</p>
+        <p>Configure earctl through CLI flags. There is no separate config file.</p>
 
-        <h3>Options</h3>
+        <h3>Global Options</h3>
+        <table>
+          <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+          <tr><td><code>--endpoint</code></td><td><code>http://127.0.0.1:8787</code></td><td>Base URL used by client commands to reach the API.</td></tr>
+        </table>
+
+        <h3>Server Options</h3>
         <table>
           <tr><th>Option</th><th>Default</th><th>Description</th></tr>
           <tr><td><code>--addr</code></td><td><code>127.0.0.1:8787</code></td><td>Listen address for <code>earctl server</code>.</td></tr>
-          <tr><td><code>--endpoint</code></td><td><code>http://127.0.0.1:8787</code></td><td>Base URL used by client commands to reach the API.</td></tr>
-          <tr><td><code>--bluetooth_address</code></td><td>–</td><td>Explicit MAC address for <code>auto-connect</code>; skips discovery.</td></tr>
-          <tr><td><code>--name</code></td><td>–</td><td>Filter connected devices by a substring of their name during auto-connect.</td></tr>
-          <tr><td><code>--channel</code></td><td><code>1</code></td><td>RFCOMM channel fallback when SDP detection fails.</td></tr>
-          <tr><td><code>--model-id</code> / <code>--sku</code></td><td>–</td><td>Override detected model metadata when the device does not report it.</td></tr>
+        </table>
+
+        <h3>Command Options</h3>
+        <p><strong>auto-connect</strong></p>
+        <table>
+          <tr><th>Option</th><th>Description</th></tr>
+          <tr><td><code>--bluetooth-address</code></td><td>Explicit MAC address; skips discovery.</td></tr>
+          <tr><td><code>--name</code></td><td>Filter connected devices by a substring of their name.</td></tr>
+          <tr><td><code>--channel</code></td><td>RFCOMM channel fallback when SDP detection fails (default: 1).</td></tr>
+          <tr><td><code>--sku</code></td><td>Override detected model metadata (SKU).</td></tr>
+        </table>
+
+        <p><strong>connect</strong></p>
+        <table>
+          <tr><th>Option</th><th>Description</th></tr>
+          <tr><td><code>--address</code></td><td><strong>Required.</strong> Bluetooth device address.</td></tr>
+          <tr><td><code>--channel</code></td><td>RFCOMM channel (default: 1).</td></tr>
+          <tr><td><code>--model-id</code></td><td>Override model ID.</td></tr>
+          <tr><td><code>--sku</code></td><td>Override SKU.</td></tr>
+          <tr><td><code>--base</code></td><td>Override model base type.</td></tr>
         </table>
       </section>
 
@@ -452,9 +473,10 @@ earctl ring --enable true --side left</code></pre>
             <h4><code>/api/anc</code> / <code>/api/eq</code></h4>
             <ul>
               <li><code>/api/anc</code>, <code>/api/eq</code>, <code>/api/eq/custom</code>: Read or set ANC and EQ (including custom bands).</li>
-              <li><code>/api/enhanced-bass</code>, <code>/api/personalized-anc</code>, <code>/api/in-ear</code>, <code>/api/latency</code>: Toggle feature switches per model support.</li>
+              <li><code>/api/enhanced-bass</code>: Read or set enhanced bass state (enabled + level).</li>
+              <li><code>/api/personalized-anc</code>, <code>/api/in-ear</code>, <code>/api/latency</code>: Toggle feature switches per model support.</li>
               <li><code>/api/gestures</code>: Read or update gesture mappings.</li>
-              <li><code>/api/led-case</code>: Read or set case LED pixels (Ear (1)).</li>
+              <li><code>/api/led-case</code>: Read or set case LED pixels (Ear (1) only).</li>
             </ul>
           </div>
           <div class="card">
