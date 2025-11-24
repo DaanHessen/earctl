@@ -68,7 +68,7 @@ On Arch, install from the AUR with `yay -S earctl`.
 
 ## Usage
 
-1. Ensure the server is running (`earctl server --addr 0.0.0.0:8787`) and your earbuds are connected via the OS Bluetooth menu.
+1. Ensure the server is running (`earctl server`) and your earbuds are connected via the OS Bluetooth menu.
 2. Auto-connect from any terminal:
    ```sh
    earctl auto-connect --name "Nothing Ear"
