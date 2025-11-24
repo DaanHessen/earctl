@@ -17,7 +17,7 @@
 <h3 align="center">Nothing Ear API/CLI</h3>
 
   <p align="center">
-    A Rust API/CLI that allows every device on your network to control your Nothing earbuds.
+    An unofficial Rust API/CLI that allows every device on your network to control your Nothing earbuds.
     <br />
     <a href="https://daanhessen.github.io/earctl/docs"><strong>View full docs »</strong></a>
     <br />
