@@ -11,7 +11,7 @@ use crate::{
     types::{
         AncLevel, BatteryReading, BatteryStatus, CustomEq, EarFitResult, EarSide,
         EnhancedBassState, EqMode, FirmwareInfo, GestureSlot, InEarState, LatencyState, LedColor,
-        LedColorSet, ModelSummary, PersonalizedAncState, SerialIdentity, SessionInfo,
+        LedColorSet, ModelSummary, PersonalizedAncState, SerialIdentity, SessionInfo, SuperMicState,
     },
 };
 
@@ -408,6 +408,37 @@ impl EarSessionHandle {
         let conn = self.inner.connection.lock().await;
         let value = if enabled { 0x01 } else { 0x00 };
         conn.send_command(command::CMD_SET_PERSONALIZED_ANC, &[value])
+            .await?;
+        Ok(())
+    }
+
+    pub async fn read_super_mic(&self) -> Result<SuperMicState, EarError> {
+        self.require_support("super mic", |base| base.supports_super_mic())
+            .await?;
+        let conn = self.inner.connection.lock().await;
+        conn.transact(
+            command::REQUEST_SUPER_MIC,
+            &[],
+            |packet| {
+                if packet.command == response::SUPER_MIC {
+                    packet.payload.first().map(|&value| SuperMicState {
+                        enabled: value == 1,
+                    })
+                } else {
+                    None
+                }
+            },
+            "super_mic",
+        )
+        .await
+    }
+
+    pub async fn set_super_mic(&self, enabled: bool) -> Result<(), EarError> {
+        self.require_support("super mic", |base| base.supports_super_mic())
+            .await?;
+        let conn = self.inner.connection.lock().await;
+        let value = if enabled { 0x01 } else { 0x00 };
+        conn.send_command(command::CMD_SET_SUPER_MIC, &[value])
             .await?;
         Ok(())
     }

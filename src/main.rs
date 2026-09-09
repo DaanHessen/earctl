@@ -65,6 +65,10 @@ enum Commands {
         #[command(subcommand)]
         action: SwitchCommand,
     },
+    SuperMic {
+        #[command(subcommand)]
+        action: SuperMicCommand,
+    },
     Ring(RingArgs),
 }
 
@@ -135,6 +139,21 @@ enum EnhancedBassCommand {
         enabled: bool,
         #[arg(long, default_value = "0")]
         level: u8,
+    },
+}
+
+#[derive(Subcommand)]
+enum SuperMicCommand {
+    /// Read whether Super Mic is enabled
+    Get,
+    /// Enable or disable Super Mic
+    Set {
+        #[arg(
+            value_parser = BoolishValueParser::new(),
+            value_name = "true|false",
+            action = ArgAction::Set
+        )]
+        enabled: bool,
     },
 }
 
@@ -369,6 +388,18 @@ async fn run_client(cli: Cli) -> Result<()> {
         Commands::InEar { action } => {
             handle_switch_command(&client, "/api/in-ear", "detection_enabled", action).await?;
         }
+        Commands::SuperMic { action } => match action {
+            SuperMicCommand::Get => {
+                let resp: Value = client.get("/api/super-mic").await?;
+                print_json(&resp)?;
+            }
+            SuperMicCommand::Set { enabled } => {
+                let resp: Value = client
+                    .post("/api/super-mic", serde_json::json!({ "enabled": enabled }))
+                    .await?;
+                print_json(&resp)?;
+            }
+        },
         Commands::EnhancedBass { action } => match action {
             EnhancedBassCommand::Get => {
                 let resp: EnhancedBassState = client.get("/api/enhanced-bass").await?;
