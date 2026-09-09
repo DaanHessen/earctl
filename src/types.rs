@@ -169,6 +169,44 @@ pub struct EarFitResult {
     pub right: u8,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SpatialAudioMode {
+    Off,
+    Fixed,
+}
+
+impl SpatialAudioMode {
+    pub fn to_device(self) -> u8 {
+        match self {
+            SpatialAudioMode::Off => 0x00,
+            SpatialAudioMode::Fixed => 0x01,
+        }
+    }
+}
+
+impl fmt::Display for SpatialAudioMode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let label = match self {
+            SpatialAudioMode::Off => "off",
+            SpatialAudioMode::Fixed => "fixed",
+        };
+        write!(f, "{}", label)
+    }
+}
+
+impl FromStr for SpatialAudioMode {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "off" => Ok(SpatialAudioMode::Off),
+            "fixed" | "on" => Ok(SpatialAudioMode::Fixed),
+            _ => Err("invalid spatial audio mode (off or fixed)"),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GestureSlot {
     pub device: u8,

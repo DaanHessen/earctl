@@ -79,6 +79,12 @@ impl ModelBase {
     pub fn supports_listening_modes(self) -> bool {
         matches!(self, Self::B168 | Self::B172)
     }
+
+    /// Spatial audio (fixed head-stage). Verified audibly on B173 (Ear (3));
+    /// other models may support it but are unconfirmed.
+    pub fn supports_spatial_audio(self) -> bool {
+        matches!(self, Self::B173)
+    }
 }
 
 impl fmt::Display for ModelBase {

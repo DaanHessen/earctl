@@ -40,6 +40,7 @@ pub mod command {
     pub const CMD_SET_CUSTOM_EQ: u16 = 0xF041;
     pub const CMD_SET_ADVANCED_EQ_ENABLED: u16 = 0xF04F;
     pub const CMD_SET_ENHANCED_BASS: u16 = 0xF051;
+    pub const CMD_SET_SPATIAL_AUDIO: u16 = 0xF052;
 }
 
 pub mod response {

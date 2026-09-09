@@ -18,7 +18,7 @@ use crate::{
     types::{
         AncLevel, CustomEq, EarFitResult, EarSide, EnhancedBassState, EqMode, FirmwareInfo,
         GestureSlot, InEarState, LatencyState, LedColorSet, ModelSummary, PersonalizedAncState,
-        SerialIdentity, SessionInfo,
+        SerialIdentity, SessionInfo, SpatialAudioMode,
     },
 };
 
@@ -47,6 +47,7 @@ pub fn router(state: ApiState) -> Router {
             get(get_personalized_anc).post(set_personalized_anc),
         )
         .route("/api/in-ear", get(read_in_ear).post(set_in_ear))
+        .route("/api/spatial-audio", post(set_spatial_audio))
         .route("/api/latency", get(read_latency).post(set_latency))
         .route("/api/firmware", get(read_firmware))
         .route("/api/ear-fit", get(read_ear_fit).post(start_ear_fit))
@@ -240,6 +241,20 @@ async fn set_in_ear(
 ) -> ApiResult<serde_json::Value> {
     let session = state.manager.session().await?;
     session.set_in_ear_detection(req.detection_enabled).await?;
+    Ok(Json(serde_json::json!({ "status": "ok" })))
+}
+
+#[derive(serde::Deserialize)]
+struct SpatialAudioBody {
+    mode: SpatialAudioMode,
+}
+
+async fn set_spatial_audio(
+    State(state): State<ApiState>,
+    Json(req): Json<SpatialAudioBody>,
+) -> ApiResult<serde_json::Value> {
+    let session = state.manager.session().await?;
+    session.set_spatial_audio(req.mode).await?;
     Ok(Json(serde_json::json!({ "status": "ok" })))
 }
 

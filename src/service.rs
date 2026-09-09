@@ -12,6 +12,7 @@ use crate::{
         AncLevel, BatteryReading, BatteryStatus, CustomEq, EarFitResult, EarSide,
         EnhancedBassState, EqMode, FirmwareInfo, GestureSlot, InEarState, LatencyState, LedColor,
         LedColorSet, ModelSummary, PersonalizedAncState, SerialIdentity, SessionInfo,
+        SpatialAudioMode,
     },
 };
 
@@ -408,6 +409,17 @@ impl EarSessionHandle {
         let conn = self.inner.connection.lock().await;
         let value = if enabled { 0x01 } else { 0x00 };
         conn.send_command(command::CMD_SET_PERSONALIZED_ANC, &[value])
+            .await?;
+        Ok(())
+    }
+
+    /// Sets spatial audio (0 = off, 1 = fixed). Verified audibly on B173.
+    /// No request opcode polls the state, so this is set-only.
+    pub async fn set_spatial_audio(&self, mode: SpatialAudioMode) -> Result<(), EarError> {
+        self.require_support("spatial audio", |base| base.supports_spatial_audio())
+            .await?;
+        let conn = self.inner.connection.lock().await;
+        conn.send_command(command::CMD_SET_SPATIAL_AUDIO, &[mode.to_device(), 0x00])
             .await?;
         Ok(())
     }
