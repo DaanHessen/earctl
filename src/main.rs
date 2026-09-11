@@ -73,6 +73,10 @@ enum Commands {
         #[command(subcommand)]
         action: SuperMicCommand,
     },
+    SpatialAudio {
+        #[arg(value_name = "off|fixed")]
+        mode: String,
+    },
     Ring(RingArgs),
 }
 
@@ -467,6 +471,12 @@ async fn run_client(cli: Cli) -> Result<()> {
                 print_json(&resp)?;
             }
         },
+        Commands::SpatialAudio { mode } => {
+            let resp: Value = client
+                .post("/api/spatial-audio", serde_json::json!({ "mode": mode }))
+                .await?;
+            print_json(&resp)?;
+        }
         Commands::Ring(args) => {
             if args.enable {
                 print!("Warning: This will play a loud tone on your earbuds. Type 'y' to confirm: ");
