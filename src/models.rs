@@ -79,6 +79,12 @@ impl ModelBase {
     pub fn supports_listening_modes(self) -> bool {
         matches!(self, Self::B168 | Self::B172)
     }
+
+    /// Super Mic (dual-mode call microphone). Verified on B173 (Ear (3));
+    /// other models may support it but are unconfirmed.
+    pub fn supports_super_mic(self) -> bool {
+        matches!(self, Self::B173)
+    }
 }
 
 impl fmt::Display for ModelBase {

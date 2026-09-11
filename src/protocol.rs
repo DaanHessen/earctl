@@ -26,6 +26,7 @@ pub mod command {
     pub const REQUEST_ADVANCED_EQ: u16 = 0xC04C;
     pub const REQUEST_ENHANCED_BASS: u16 = 0xC04E;
     pub const REQUEST_LISTENING_MODE: u16 = 0xC050;
+    pub const REQUEST_SUPER_MIC: u16 = 0xC05E;
 
     pub const CMD_RING: u16 = 0xF002;
     pub const CMD_SET_GESTURE: u16 = 0xF003;
@@ -40,6 +41,7 @@ pub mod command {
     pub const CMD_SET_CUSTOM_EQ: u16 = 0xF041;
     pub const CMD_SET_ADVANCED_EQ_ENABLED: u16 = 0xF04F;
     pub const CMD_SET_ENHANCED_BASS: u16 = 0xF051;
+    pub const CMD_SET_SUPER_MIC: u16 = 0xF05F;
 }
 
 pub mod response {
@@ -60,6 +62,7 @@ pub mod response {
     pub const IN_EAR: u16 = 0x400E;
     pub const LATENCY: u16 = 0x4041;
     pub const EAR_FIT_RESULT: u16 = 0xE00D;
+    pub const SUPER_MIC: u16 = 0x405E;
 }
 
 impl EarPacket {

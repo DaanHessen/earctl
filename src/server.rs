@@ -18,8 +18,7 @@ use crate::{
     types::{
         AncLevel, CustomEq, EarFitResult, EarSide, EnhancedBassState, EqMode, FirmwareInfo,
         GestureSlot, GestureSlotNamed, InEarState, LatencyState, LedColorSet, ModelSummary,
-        PersonalizedAncState,
-        SerialIdentity, SessionInfo,
+        PersonalizedAncState, SerialIdentity, SessionInfo, SuperMicState,
     },
 };
 
@@ -48,6 +47,7 @@ pub fn router(state: ApiState) -> Router {
             get(get_personalized_anc).post(set_personalized_anc),
         )
         .route("/api/in-ear", get(read_in_ear).post(set_in_ear))
+        .route("/api/super-mic", get(read_super_mic).post(set_super_mic))
         .route("/api/latency", get(read_latency).post(set_latency))
         .route("/api/firmware", get(read_firmware))
         .route("/api/ear-fit", get(read_ear_fit).post(start_ear_fit))
@@ -243,6 +243,22 @@ async fn set_in_ear(
     session.set_in_ear_detection(req.detection_enabled).await?;
     Ok(Json(serde_json::json!({ "status": "ok" })))
 }
+
+async fn read_super_mic(State(state): State<ApiState>) -> ApiResult<SuperMicState> {
+    let session = state.manager.session().await?;
+    let resp = session.read_super_mic().await?;
+    Ok(Json(resp))
+}
+
+async fn set_super_mic(
+    State(state): State<ApiState>,
+    Json(req): Json<SuperMicState>,
+) -> ApiResult<serde_json::Value> {
+    let session = state.manager.session().await?;
+    session.set_super_mic(req.enabled).await?;
+    Ok(Json(serde_json::json!({ "status": "ok" })))
+}
+
 
 async fn read_latency(State(state): State<ApiState>) -> ApiResult<LatencyState> {
     let session = state.manager.session().await?;

@@ -69,6 +69,10 @@ enum Commands {
         #[command(subcommand)]
         action: GesturesCommand,
     },
+    SuperMic {
+        #[command(subcommand)]
+        action: SuperMicCommand,
+    },
     Ring(RingArgs),
 }
 
@@ -158,6 +162,21 @@ enum GesturesCommand {
         /// volume_up, noise_control_anc_transparency) or a raw numeric code
         #[arg(long)]
         action: String,
+    },
+}
+
+#[derive(Subcommand)]
+enum SuperMicCommand {
+    /// Read whether Super Mic is enabled
+    Get,
+    /// Enable or disable Super Mic
+    Set {
+        #[arg(
+            value_parser = BoolishValueParser::new(),
+            value_name = "true|false",
+            action = ArgAction::Set
+        )]
+        enabled: bool,
     },
 }
 
@@ -392,6 +411,18 @@ async fn run_client(cli: Cli) -> Result<()> {
         Commands::InEar { action } => {
             handle_switch_command(&client, "/api/in-ear", "detection_enabled", action).await?;
         }
+        Commands::SuperMic { action } => match action {
+            SuperMicCommand::Get => {
+                let resp: Value = client.get("/api/super-mic").await?;
+                print_json(&resp)?;
+            }
+            SuperMicCommand::Set { enabled } => {
+                let resp: Value = client
+                    .post("/api/super-mic", serde_json::json!({ "enabled": enabled }))
+                    .await?;
+                print_json(&resp)?;
+            }
+        },
         Commands::EnhancedBass { action } => match action {
             EnhancedBassCommand::Get => {
                 let resp: EnhancedBassState = client.get("/api/enhanced-bass").await?;

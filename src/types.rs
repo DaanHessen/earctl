@@ -170,6 +170,11 @@ pub struct EarFitResult {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SuperMicState {
+    pub enabled: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GestureSlot {
     pub device: u8,
     pub common: u8,
