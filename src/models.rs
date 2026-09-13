@@ -16,6 +16,7 @@ pub enum ModelBase {
     B172,
     B173,
     B174,
+    B179,
 }
 
 impl ModelBase {
@@ -32,6 +33,7 @@ impl ModelBase {
             "B172" => Self::B172,
             "B173" => Self::B173,
             "B174" => Self::B174,
+            "B179" => Self::B179,
             _ => Self::Unknown,
         }
     }
@@ -50,6 +52,7 @@ impl ModelBase {
             Self::B172 => "B172",
             Self::B173 => "B173",
             Self::B174 => "B174",
+            Self::B179 => "B179",
         }
     }
 
@@ -64,7 +67,7 @@ impl ModelBase {
     pub fn supports_enhanced_bass(self) -> bool {
         matches!(
             self,
-            Self::B171 | Self::B172 | Self::B168 | Self::B162 | Self::B173
+            Self::B171 | Self::B172 | Self::B168 | Self::B162 | Self::B173 | Self::B179
         )
     }
 
@@ -86,10 +89,11 @@ impl ModelBase {
         matches!(self, Self::B173)
     }
 
-    /// Spatial audio (fixed head-stage). Verified audibly on B173 (Ear (3));
-    /// other models may support it but are unconfirmed.
+    /// Spatial audio (fixed head-stage). Verified audibly on B173 (Ear (3))
+    /// and on B179 (CMF Buds 2), where Nothing X shows it applied. Other
+    /// models may support it but are unconfirmed.
     pub fn supports_spatial_audio(self) -> bool {
-        matches!(self, Self::B173)
+        matches!(self, Self::B173 | Self::B179)
     }
 }
 
@@ -272,6 +276,12 @@ pub static MODEL_LIST: &[ModelInfo] = &[
         base: ModelBase::B173,
         anc_capable: true,
     },
+    ModelInfo {
+        id: "cmf_buds_2",
+        name: "CMF Buds 2",
+        base: ModelBase::B179,
+        anc_capable: true,
+    },
 ];
 
 const SKU_TO_MODEL_PAIRS: &[(&str, &str)] = &[
@@ -338,6 +348,11 @@ const SKU_TO_MODEL_PAIRS: &[(&str, &str)] = &[
     // 22 is the presumed other colorway, unverified.
     ("21", "feraligatr_black"),
     ("22", "feraligatr_white"),
+    // CMF Buds 2 (B179): serial 135100... on hardware, which the
+    // "13" scheme reads as SKU 00. Other colourways unknown. Enhanced bass
+    // (5 levels) and spatial audio verified against Nothing X; unlike
+    // B173 the two are not exclusive here.
+    ("00", "cmf_buds_2"),
 ];
 
 pub static MODEL_BY_ID: Lazy<HashMap<&'static str, &'static ModelInfo>> = Lazy::new(|| {
