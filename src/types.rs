@@ -15,6 +15,9 @@ pub struct BatteryStatus {
     pub left: BatteryReading,
     pub right: BatteryReading,
     pub case: BatteryReading,
+    // Over-ear models (e.g. Headphone (1)) report one battery here instead of
+    // left/right/case.
+    pub single: BatteryReading,
 }
 
 impl BatteryStatus {
@@ -23,6 +26,7 @@ impl BatteryStatus {
             left: BatteryReading::Disconnected,
             right: BatteryReading::Disconnected,
             case: BatteryReading::Disconnected,
+            single: BatteryReading::Disconnected,
         }
     }
 }

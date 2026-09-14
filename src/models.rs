@@ -17,6 +17,7 @@ pub enum ModelBase {
     B173,
     B174,
     B179,
+    B170,
 }
 
 impl ModelBase {
@@ -34,6 +35,7 @@ impl ModelBase {
             "B173" => Self::B173,
             "B174" => Self::B174,
             "B179" => Self::B179,
+            "B170" => Self::B170,
             _ => Self::Unknown,
         }
     }
@@ -53,6 +55,7 @@ impl ModelBase {
             Self::B173 => "B173",
             Self::B174 => "B174",
             Self::B179 => "B179",
+            Self::B170 => "B170",
         }
     }
 
@@ -67,7 +70,7 @@ impl ModelBase {
     pub fn supports_enhanced_bass(self) -> bool {
         matches!(
             self,
-            Self::B171 | Self::B172 | Self::B168 | Self::B162 | Self::B173 | Self::B179
+            Self::B171 | Self::B172 | Self::B168 | Self::B162 | Self::B173 | Self::B179 | Self::B170
         )
     }
 
@@ -93,7 +96,14 @@ impl ModelBase {
     /// and on B179 (CMF Buds 2), where Nothing X shows it applied. Other
     /// models may support it but are unconfirmed.
     pub fn supports_spatial_audio(self) -> bool {
-        matches!(self, Self::B173 | Self::B179)
+        matches!(self, Self::B173 | Self::B179 | Self::B170)
+    }
+
+    /// True for the over-ear Headphone line, which reports a single battery
+    /// (device id 0x06) rather than the earbuds' left/right/case, and has no
+    /// case controls (Super Mic, find-a-bud, in-case charging).
+    pub fn is_over_ear(self) -> bool {
+        matches!(self, Self::B170)
     }
 }
 
@@ -282,7 +292,26 @@ pub static MODEL_LIST: &[ModelInfo] = &[
         base: ModelBase::B179,
         anc_capable: true,
     },
+    ModelInfo {
+        id: "headphone_1",
+        name: "Nothing Headphone (1)",
+        base: ModelBase::B170,
+        anc_capable: true,
+    },
 ];
+
+// Some models don't fit the earbuds' two-digit SKU scheme. The over-ear
+// Headphone (1) reports a serial like "M346032540000326" (no SKU byte in the
+// range the earbuds use), so it's matched by serial prefix instead. Confirmed
+// on one B170 unit; extend as more prefixes are observed.
+const SERIAL_PREFIX_TO_MODEL: &[(&str, &str)] = &[("M3", "headphone_1")];
+
+pub fn model_from_serial_prefix(serial: &str) -> Option<&'static ModelInfo> {
+    SERIAL_PREFIX_TO_MODEL
+        .iter()
+        .find(|(prefix, _)| serial.starts_with(prefix))
+        .and_then(|(_, id)| model_from_id(id))
+}
 
 const SKU_TO_MODEL_PAIRS: &[(&str, &str)] = &[
     ("01", "ear_1_white"),
