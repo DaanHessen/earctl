@@ -6,7 +6,7 @@ use uuid::Uuid;
 use crate::{
     connection::EarConnection,
     error::EarError,
-    models::{ModelBase, model_from_id, model_from_sku},
+    models::{ModelBase, model_from_id, model_from_serial_prefix, model_from_sku},
     protocol::{command, response},
     types::{
         AncLevel, BatteryReading, BatteryStatus, CustomEq, EarFitResult, EarSide,
@@ -224,7 +224,11 @@ impl EarSessionHandle {
         let mut sku = None;
         let mut model_summary = None;
         if let Some(ref serial_number) = serial {
-            if let Some(detected_sku) = derive_sku_from_serial(serial_number) {
+            // Serial-prefix models (e.g. the over-ear Headphone (1)) first,
+            // since they don't carry the earbuds' two-digit SKU.
+            if let Some(info) = model_from_serial_prefix(serial_number) {
+                model_summary = Some(info);
+            } else if let Some(detected_sku) = derive_sku_from_serial(serial_number) {
                 if let Some(info) = model_from_sku(detected_sku.as_str()) {
                     model_summary = Some(info);
                 }
@@ -724,6 +728,7 @@ fn parse_battery_payload(payload: &[u8]) -> BatteryStatus {
             0x02 => status.left = reading,
             0x03 => status.right = reading,
             0x04 => status.case = reading,
+            0x06 => status.single = reading, // over-ear (Headphone (1))
             _ => {}
         }
     }
