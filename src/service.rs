@@ -454,7 +454,7 @@ impl EarSessionHandle {
         self.require_support("spatial audio", |base| base.supports_spatial_audio())
             .await?;
         let conn = self.inner.connection.lock().await;
-        conn.send_command(command::CMD_SET_SPATIAL_AUDIO, &[mode.to_device(), 0x00])
+        conn.send_command(command::CMD_SET_SPATIAL_AUDIO, &mode.to_payload())
             .await?;
         Ok(())
     }

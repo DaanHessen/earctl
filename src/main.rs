@@ -74,7 +74,7 @@ enum Commands {
         action: SuperMicCommand,
     },
     SpatialAudio {
-        #[arg(value_name = "off|fixed")]
+        #[arg(value_name = "off|fixed|head_tracking")]
         mode: String,
     },
     Ring(RingArgs),
