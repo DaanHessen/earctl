@@ -15,6 +15,9 @@ pub struct BatteryStatus {
     pub left: BatteryReading,
     pub right: BatteryReading,
     pub case: BatteryReading,
+    // Over-ear models (e.g. Headphone (1)) report one battery here instead of
+    // left/right/case.
+    pub single: BatteryReading,
 }
 
 impl BatteryStatus {
@@ -23,6 +26,7 @@ impl BatteryStatus {
             left: BatteryReading::Disconnected,
             right: BatteryReading::Disconnected,
             case: BatteryReading::Disconnected,
+            single: BatteryReading::Disconnected,
         }
     }
 }
@@ -174,13 +178,19 @@ pub struct EarFitResult {
 pub enum SpatialAudioMode {
     Off,
     Fixed,
+    /// Head-tracked spatial; over-ear only (Headphone (1)). Earbuds expose
+    /// only Off/Fixed.
+    HeadTracking,
 }
 
 impl SpatialAudioMode {
-    pub fn to_device(self) -> u8 {
+    /// The two-byte F052 payload: [enabled, head_tracking]. Off = [0,0],
+    /// Fixed = [1,0], Head-tracking = [1,1]. Captured from Nothing X.
+    pub fn to_payload(self) -> [u8; 2] {
         match self {
-            SpatialAudioMode::Off => 0x00,
-            SpatialAudioMode::Fixed => 0x01,
+            SpatialAudioMode::Off => [0x00, 0x00],
+            SpatialAudioMode::Fixed => [0x01, 0x00],
+            SpatialAudioMode::HeadTracking => [0x01, 0x01],
         }
     }
 }
@@ -190,6 +200,7 @@ impl fmt::Display for SpatialAudioMode {
         let label = match self {
             SpatialAudioMode::Off => "off",
             SpatialAudioMode::Fixed => "fixed",
+            SpatialAudioMode::HeadTracking => "head_tracking",
         };
         write!(f, "{}", label)
     }
@@ -202,7 +213,10 @@ impl FromStr for SpatialAudioMode {
         match s.to_lowercase().as_str() {
             "off" => Ok(SpatialAudioMode::Off),
             "fixed" | "on" => Ok(SpatialAudioMode::Fixed),
-            _ => Err("invalid spatial audio mode (off or fixed)"),
+            "head_tracking" | "head-tracking" | "headtracking" => {
+                Ok(SpatialAudioMode::HeadTracking)
+            }
+            _ => Err("invalid spatial audio mode (off, fixed or head_tracking)"),
         }
     }
 }
